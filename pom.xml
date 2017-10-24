@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.dlt.demo</groupId>
+  <artifactId>iot.datacenter.ocp.brmsds</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+
+  <name>Internet of Things DemoJam :: Datacenter OpenShift Container Platform :: Business Rules Management System Decision Server</name>
+  <description>based on:
+OpenShift Quickstarts: Decision Server: Hello Rules - Client
+A simple example application demonstrating the use of a business rule.</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- dependency versions -->
+    <activemq.version>5.8.0</activemq.version>
+    <jms.version>1.1</jms.version>
+    <kie.version>6.5.0.Final-redhat-15</kie.version>
+    <paho.version>0.4.0</paho.version>
+    <servlet.version>1.0.2.Final-redhat-2</servlet.version>
+
+    <!-- maven-compiler-plugin -->
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>red-hat-ga-repository</id>
+      <name>Red Hat GA Repository</name>
+      <url>https://maven.repository.redhat.com/ga</url>
+    </repository>
+
+    <repository>
+      <id>paho-mqtt-client</id>
+      <name>Paho MQTT Client</name>
+      <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>red-hat-ga-repository</id>
+      <name>Red Hat GA Repository</name>
+      <url>https://maven.repository.redhat.com/ga</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <version>${servlet.version}</version>
+    </dependency>
+
+    <!-- ActiveMQ dependencies -->
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+      <version>${jms.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-client</artifactId>
+      <version>${activemq.version}</version>
+    </dependency>
+
+    <!-- BPM/BRMS dependencies -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-kie-services</artifactId>
+      <version>${kie.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.remote</groupId>
+      <artifactId>kie-remote-client</artifactId>
+      <version>${kie.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.server</groupId>
+      <artifactId>kie-server-client</artifactId>
+      <version>${kie.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-guided-dtable</artifactId>
+      <version>${kie.version}</version>
+    </dependency>
+
+    <!-- MQTT dependencies  -->
+    <dependency>
+      <groupId>org.eclipse.paho</groupId>
+      <artifactId>mqtt-client</artifactId>
+      <version>${paho.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.commonjava.maven.plugins</groupId>
+                    <artifactId>project-sources-maven-plugin</artifactId>
+                    <versionRange>[0.3,)</versionRange>
+                    <goals>
+                      <goal>archive</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>com.dlt.demo.iot.datacenter.ocp.brmsds.Application</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

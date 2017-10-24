@@ -1,0 +1,549 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "annotations": {
+            "description": "Internet of Things Demo :: Datacenter OpenShift Container Platform :: Business Rules Management System Decision Server :: based on: Application template for Red Hat JBoss BRMS 6.4 decision server applications built using S2I.",
+            "iconClass": "icon-jboss",
+            "tags": "decisionserver,jboss,xpaas",
+            "version": "1.4.0",
+            "openshift.io/display-name": "IoT DemoJam Datacenter's BRMS Decision Server on OCP"
+        },
+        "name": "iotdj-docp-bds"
+    },
+    "labels": {
+        "template": "iotdj-docp-bds",
+        "xpaas": "1.4.0"
+    },
+    "message": "A new BRMS application has been created in your project. The username/password for accessing the KIE Server REST or JMS interface is ${KIE_SERVER_USER}/${KIE_SERVER_PASSWORD}.",
+    "parameters": [
+        {
+            "displayName": "KIE Container Deployment",
+            "description": "The KIE Container deployment configuration in format: containerId=groupId:artifactId:version|c2=g2:a2:v2",
+            "name": "KIE_CONTAINER_DEPLOYMENT",
+            "value": "SensorRules=com.dlt.demo.iot.datacenter.ocp.businessrules:SensorRules:1.0",
+            "required": false
+        },
+        {
+            "displayName": "KIE Server Username",
+            "description": "The user name to access the KIE Server REST or JMS interface.",
+            "name": "KIE_SERVER_USER",
+            "value": "kieserver",
+            "required": false
+        },
+        {
+            "displayName": "KIE Server Password",
+            "description": "The password to access the KIE Server REST or JMS interface. Must be different than username; must not be root, admin, or administrator; must contain at least 8 characters, 1 alphabetic character(s), 1 digit(s), and 1 non-alphanumeric symbol(s).",
+            "name": "KIE_SERVER_PASSWORD",
+            "from": "[a-zA-Z]{6}[0-9]{1}!",
+            "generate": "expression",
+            "value": "",
+            "required": false
+        },
+        {
+            "displayName": "Application Name",
+            "description": "The name for the application.",
+            "name": "APPLICATION_NAME",
+            "value": "iotdj-docp-bds",
+            "required": true
+        },
+        {
+            "displayName": "Custom http Route Hostname",
+            "description": "Custom hostname for http service route.  Leave blank for default hostname, e.g.: <application-name>-<project>.<default-domain-suffix>",
+            "name": "HOSTNAME_HTTP",
+            "value": "",
+            "required": false
+        },
+        {
+            "displayName": "Git Repository URL",
+            "description": "Git source URI for application",
+            "name": "SOURCE_REPOSITORY_URL",
+            "value": "https://github.com/MichaelFitzurka/IoT-DemoJam_Datacenter-OCP_BRMSDS.git",
+            "required": true
+        },
+        {
+            "displayName": "Git Reference",
+            "description": "Git branch/tag reference",
+            "name": "SOURCE_REPOSITORY_REF",
+            "value": "master",
+            "required": false
+        },
+        {
+            "displayName": "Context Directory",
+            "description": "Path within Git project to build; empty for root project directory.",
+            "name": "CONTEXT_DIR",
+            "value": "",
+            "required": false
+        },
+        {
+            "displayName": "Source Secret",
+            "description": "Secret with credentials for pulling your source code.",
+            "name": "SOURCE_REPOSITORY_SECRET",
+            "value": "github-secret",
+            "required": false
+        },
+        {
+            "displayName": "Queues",
+            "description": "Queue names",
+            "name": "HORNETQ_QUEUES",
+            "value": "",
+            "required": false
+        },
+        {
+            "displayName": "Topics",
+            "description": "Topic names",
+            "name": "HORNETQ_TOPICS",
+            "value": "",
+            "required": false
+        },
+        {
+            "displayName": "HornetQ Password",
+            "description": "HornetQ cluster admin password",
+            "name": "HORNETQ_CLUSTER_PASSWORD",
+            "from": "[a-zA-Z0-9]{8}",
+            "generate": "expression",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter BPM Suite Intelligent Process Server URL",
+            "description": "The URL for the BPM Suite Intelligent Process Server.",
+            "name": "BPMSIPS_URL",
+            "value": "http://192.168.106.201:8080/business-central",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter BPM Suite Intelligent Process Server Username",
+            "description": "The username for the BPM Suite Intelligent Process Server.",
+            "name": "BPMSIPS_USERNAME",
+            "value": "psteiner",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter BPM Suite Intelligent Process Server Password",
+            "description": "The password for the BPM Suite Intelligent Process Server.",
+            "name": "BPMSIPS_PASSWORD",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter BPM Suite Intelligent Process Server Deployement ID",
+            "description": "The deployment ID for the BPM Suite Intelligent Process Server.",
+            "name": "BPMSIPS_DEPLOYMENT_ID",
+            "value": "RedHat:IoTProcesses:LATEST",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter BPM Suite Intelligent Process Server Process ID",
+            "description": "The process ID for the BPM Suite Intelligent Process Server.",
+            "name": "BPMSIPS_PROCESS_ID",
+            "value": "IoTProcesses.IoTEvent",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Data Grid URL Prefix",
+            "description": "The URL prefix for the Data Grid service.",
+            "name": "DATA_GRID_URL_PREFIX",
+            "value": "http://iotdj-docp-dg.iotdj-docp.svc:8080/rest/default/",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Source A-MQ Broker URL",
+            "description": "The URL for the source AM-Q broker.",
+            "name": "SOURCE_AMQ_BROKER_URL",
+            "value": "tcp://iotdj-docp-broker-amq-tcp.iotdj-docp.svc:61616",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Source A-MQ Broker Username",
+            "description": "The username for the source A-MQ broker.",
+            "name": "SOURCE_BROKER_USERNAME",
+            "value": "admin",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Source A-MQ Broker Password",
+            "description": "The password for the source A-MQ broker.",
+            "name": "SOURCE_BROKER_PASSWORD",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Source A-MQ Broker Queue Name",
+            "description": "The queue name for the source A-MQ broker.",
+            "name": "SOURCE_QUEUE",
+            "value": "message.to.rules",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Target MQTT Broker URL",
+            "description": "The URL for the target MQTT broker.",
+            "name": "TARGET_MQTT_BROKER_URL",
+            "value": "tcp://192.168.106.200:1883",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Target MQTT Broker Username",
+            "description": "The username for the target MQTT broker.",
+            "name": "TARGET_BROKER_USERNAME",
+            "value": "admin",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Target MQTT Broker Password",
+            "description": "The password for the target MQTT broker.",
+            "name": "TARGET_BROKER_PASSWORD",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Target MQTT Broker Client ID",
+            "description": "The client ID for the target MQTT broker.",
+            "name": "TARGET_CLIENT_ID",
+            "value": "rules_server",
+            "required": true
+        },
+        {
+            "displayName": "IoT DemoJam Datacenter Target MQTT Broker Topic",
+            "description": "The topic for the target MQTT broker.",
+            "name": "TARGET_TOPIC",
+            "value": "iotdj-command/light",
+            "required": true
+        },
+        {
+            "displayName": "Github Webhook Secret",
+            "description": "GitHub trigger secret",
+            "name": "GITHUB_WEBHOOK_SECRET",
+            "from": "[a-zA-Z0-9]{8}",
+            "generate": "expression",
+            "required": true
+        },
+        {
+            "displayName": "Generic Webhook Secret",
+            "description": "Generic build trigger secret",
+            "name": "GENERIC_WEBHOOK_SECRET",
+            "from": "[a-zA-Z0-9]{8}",
+            "generate": "expression",
+            "required": true
+        },
+        {
+            "displayName": "ImageStream Namespace",
+            "description": "Namespace in which the ImageStreams for Red Hat Middleware images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.",
+            "name": "IMAGE_STREAM_NAMESPACE",
+            "value": "openshift",
+            "required": true
+        },
+        {
+            "displayName": "Maven mirror URL",
+            "description": "Maven mirror to use for S2I builds",
+            "name": "MAVEN_MIRROR_URL",
+            "value": "http://nexus.iotdj-docp.svc:8081/repository/maven-public/",
+            "required": false
+        },
+        {
+            "description": "List of directories from which archives will be copied into the deployment folder. If unspecified, all archives in /target will be copied.",
+            "name": "ARTIFACT_DIR",
+            "value": "",
+            "required": false
+        }
+    ],
+    "objects": [
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                }
+            },
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "The web server's http port."
+                }
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "id": "${APPLICATION_NAME}-http",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "Route for application's http service."
+                }
+            },
+            "spec": {
+                "host": "${HOSTNAME_HTTP}",
+                "to": {
+                    "name": "${APPLICATION_NAME}"
+                }
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "${SOURCE_REPOSITORY_URL}",
+                        "ref": "${SOURCE_REPOSITORY_REF}"
+                    },
+                    "sourceSecret": {
+                        "name": "${SOURCE_REPOSITORY_SECRET}"
+                    },
+                    "contextDir": "${CONTEXT_DIR}"
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "env": [
+                            {
+                                "name": "KIE_CONTAINER_DEPLOYMENT",
+                                "value": "${KIE_CONTAINER_DEPLOYMENT}"
+                            },
+                            {
+                                "name": "MAVEN_MIRROR_URL",
+                                "value": "${MAVEN_MIRROR_URL}"
+                            },
+                            {
+                                "name": "ARTIFACT_DIR",
+                                "value": "${ARTIFACT_DIR}"
+                            }
+                        ],
+                        "forcePull": false,
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "namespace": "${IMAGE_STREAM_NAMESPACE}",
+                            "name": "iotdj-decisionserver64-openshift:1.0"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "${APPLICATION_NAME}:latest"
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "GitHub",
+                        "github": {
+                            "secret": "${GITHUB_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "Generic",
+                        "generic": {
+                            "secret": "${GENERIC_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "${APPLICATION_NAME}"
+                            ],
+                            "from": {
+                                "kind": "ImageStream",
+                                "name": "${APPLICATION_NAME}"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}",
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}",
+                            "application": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "terminationGracePeriodSeconds": 60,
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}",
+                                "image": "${APPLICATION_NAME}",
+                                "imagePullPolicy": "Always",
+                                "livenessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/livenessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/readinessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "ports": [
+                                    {
+                                        "name": "jolokia",
+                                        "containerPort": 8778,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "http",
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "KIE_CONTAINER_DEPLOYMENT",
+                                        "value": "${KIE_CONTAINER_DEPLOYMENT}"
+                                    },
+                                    {
+                                        "name": "KIE_SERVER_USER",
+                                        "value": "${KIE_SERVER_USER}"
+                                    },
+                                    {
+                                        "name": "KIE_SERVER_PASSWORD",
+                                        "value": "${KIE_SERVER_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "HORNETQ_CLUSTER_PASSWORD",
+                                        "value": "${HORNETQ_CLUSTER_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "HORNETQ_QUEUES",
+                                        "value": "${HORNETQ_QUEUES}"
+                                    },
+                                    {
+                                        "name": "HORNETQ_TOPICS",
+                                        "value": "${HORNETQ_TOPICS}"
+                                    },
+                                    {
+                                    	"name": "BPMSIPS_URL",
+                                    	"value": "${BPMSIPS_URL}"
+                                    },
+                                    {
+                                    	"name": "BPMSIPS_USERNAME",
+                                    	"value": "${BPMSIPS_USERNAME}"
+                                    },
+                                    {
+                                    	"name": "BPMSIPS_PASSWORD",
+                                    	"value": "${BPMSIPS_PASSWORD}"
+                                    },
+                                    {
+                                    	"name": "BPMSIPS_DEPLOYMENT_ID",
+                                    	"value": "${BPMSIPS_DEPLOYMENT_ID}"
+                                    },
+                                    {
+                                    	"name": "BPMSIPS_PROCESS_ID",
+                                    	"value": "${BPMSIPS_PROCESS_ID}"
+                                    },
+                                    {
+                                    	"name": "DATA_GRID_URL_PREFIX",
+                                    	"value": "${DATA_GRID_URL_PREFIX}"
+                                    },
+                                    {
+                                    	"name": "SOURCE_AMQ_BROKER_URL",
+                                    	"value": "${SOURCE_AMQ_BROKER_URL}"
+                                    },
+                                    {
+                                    	"name": "SOURCE_BROKER_USERNAME",
+                                    	"value": "${SOURCE_BROKER_USERNAME}"
+                                    },
+                                    {
+                                    	"name": "SOURCE_BROKER_PASSWORD",
+                                    	"value": "${SOURCE_BROKER_PASSWORD}"
+                                    },
+                                    {
+                                    	"name": "SOURCE_QUEUE",
+                                    	"value": "${SOURCE_QUEUE}"
+                                    },
+                                    {
+                                    	"name": "TARGET_MQTT_BROKER_URL",
+                                    	"value": "${TARGET_MQTT_BROKER_URL}"
+                                    },
+                                    {
+                                    	"name": "TARGET_BROKER_USERNAME",
+                                    	"value": "${TARGET_BROKER_USERNAME}"
+                                    },
+                                    {
+                                    	"name": "TARGET_BROKER_PASSWORD",
+                                    	"value": "${TARGET_BROKER_PASSWORD}"
+                                    },
+                                    {
+                                    	"name": "TARGET_CLIENT_ID",
+                                    	"value": "${TARGET_CLIENT_ID}"
+                                    },
+                                    {
+                                    	"name": "TARGET_TOPIC",
+                                    	"value": "${TARGET_TOPIC}"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
